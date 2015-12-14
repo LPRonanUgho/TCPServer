@@ -17,3 +17,10 @@ Au démarrage, le serveur lira un fichier de configuration pour déterminer les 
 - sujet du mail : ```[lp-prog2] tp echo```
 - contenu du mail : Prénoms et noms des membres du binome
 - pièce-jointe : Archive ```ZIP``` contenant les codes sources commentés et un script ant de construction de l’application.
+
+#### Maven utils
+
+- mvn clean
+- mvn compile
+- mvn package
+- mvn install
