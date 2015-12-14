@@ -2,7 +2,6 @@
 ### Licence profesionnelle Systèmes Informatiques et Logiciels
 #### Programmation 2 | Programmation concurrente
 ##### Énoncé :
-\
 Développer un serveur TCP pour le protocole echo (https://tools.ietf.org/html/rfc862), capable de supporter plusieurs connexions simultanées. Si un client reste inactif pendant une durée supérieure à un paramàtre fixé, cette connexion est fermée par le serveur. Deux implémentations sont à fournir : l'une utilisant l'API de bas niveau, l'autre utilisant l'API de haut niveau.
 
 Au démarrage, le serveur lira un fichier de configuration pour déterminer les valeurs des paramétres suivants :
