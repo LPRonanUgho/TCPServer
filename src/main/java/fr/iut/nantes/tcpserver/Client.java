@@ -2,11 +2,13 @@ package fr.iut.nantes.tcpserver;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 /**
  * Client class
@@ -19,9 +21,14 @@ public class Client {
 	private static DataOutputStream writeToServer = null;
 	private static BufferedReader readerFromUser = new BufferedReader(new InputStreamReader(System.in));
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
+		
+		Properties prop = new Properties();
+		// load a properties file
+		prop.load(new FileInputStream("config.properties"));
+		
 		try {
-			serverSocket = new Socket(InetAddress.getLocalHost(), 1234);
+			serverSocket = new Socket(InetAddress.getLocalHost(), Integer.parseInt(prop.getProperty("port")));
 
 			readerFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
 			writeToServer = new DataOutputStream(serverSocket.getOutputStream());

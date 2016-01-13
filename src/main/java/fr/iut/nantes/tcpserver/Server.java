@@ -2,12 +2,14 @@ package fr.iut.nantes.tcpserver;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Properties;
 
 class Server implements Runnable {
 
@@ -19,10 +21,16 @@ class Server implements Runnable {
 	}
 
 	public static void main(String args[]) throws Exception {
+		
+		Properties prop = new Properties();
+		// load a properties file
+		prop.load(new FileInputStream("config.properties"));
+
+		
 		ServerSocket serverSocket = null;
 
 		try {
-			serverSocket = new ServerSocket(1234);
+			serverSocket = new ServerSocket(Integer.parseInt(prop.getProperty("port")));
 		} catch (IOException ioe) {
 			System.out.println("Error finding port");
 			System.exit(1);
@@ -33,7 +41,7 @@ class Server implements Runnable {
 		try {
 			while (true) {
 				Socket socket = serverSocket.accept();
-				socket.setSoTimeout(timeOut * 1000);
+				socket.setSoTimeout(Integer.parseInt(prop.getProperty("timeout")) * 1000);
 
 				if (socket != null) {
 					System.out.println("Client connected at :\t\t" + socket);
