@@ -11,13 +11,13 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Properties;
 
-class Server implements Runnable {
+class LowLevelServer implements Runnable {
 
 	private Socket clientSocket;
 	private static int maxConnection;
 	private static int runningConnections = 0;
 
-	public Server(Socket clientSocket) {
+	public LowLevelServer(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
 
@@ -50,7 +50,7 @@ class Server implements Runnable {
 					System.out.println("Client connected at :\t\t" + socket);
 				}
 
-				Thread t = new Thread(new Server(socket));
+				Thread t = new Thread(new LowLevelServer(socket));
 				t.start();
 			}
 		} catch (Exception e) {

@@ -13,7 +13,7 @@ import java.util.Properties;
 /**
  * Client class
  */
-public class Client {
+public class LaunchClient {
 
 	private static Socket serverSocket = null;
 	private static String messageFromUser = null;
