@@ -18,6 +18,7 @@ public class LaunchClient {
 
 	private static Socket serverSocket = null;
 	private static int port;
+	private static String serverAddress;
 	private static String messageFromUser = null;
 	private static BufferedReader readerFromServer = null;
 	private static DataOutputStream writeToServer = null;
@@ -30,9 +31,10 @@ public class LaunchClient {
 		
 		// Chargement des propriétées
 		port = Integer.parseInt(prop.getProperty("port"));
+		serverAddress = prop.getProperty("serverAddress");
 		
 		try {
-			serverSocket = new Socket(InetAddress.getLocalHost(), port);
+			serverSocket = new Socket(InetAddress.getByName(serverAddress), port);
 
 			readerFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
 			
