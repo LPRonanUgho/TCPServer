@@ -22,6 +22,8 @@ public class LaunchServer {
 			LowLevelServer.main(args);
 		} else if("high".equals(prop.getProperty("level"))) {
 			HighLevelServer.main(args);
+		} else {
+			System.out.println("Erreur properties");
 		}
 	}
 }

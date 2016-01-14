@@ -77,4 +77,9 @@ public class LaunchClient {
 			System.exit(0);
 		}
 	}
+
+	public void run() {
+		// TODO Auto-generated method stub
+		
+	}
 }
