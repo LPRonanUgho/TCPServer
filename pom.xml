@@ -1,25 +1,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>fr.iut.nantes</groupId>
-  <artifactId>tcpserver</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>jar</packaging>
+	<groupId>fr.iut.nantes</groupId>
+	<artifactId>tcpserver</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-  <name>tcpserver</name>
-  <url>http://maven.apache.org</url>
+	<name>tcpserver</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+	<build>
+		<plugins>
+			<plugin>
+	            <artifactId>maven-assembly-plugin</artifactId>
+	            <executions>
+	                <execution>
+	                    <id>build-server</id>
+	                    <configuration>
+	                        <archive>
+	                            <manifest>
+	                                <mainClass>LowLevelServer</mainClass>
+	                            </manifest>
+	                        </archive>
+	                        <descriptorRefs>
+	                            <descriptorRef>jar-with-dependencies</descriptorRef>
+	                        </descriptorRefs>
+	                        <finalName>server.jar</finalName>
+	                    </configuration>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>assembly</goal>
+	                    </goals>
+	                </execution>
+	                <execution>
+	                    <id>build-client</id>
+	                    <configuration>
+	                        <archive>
+	                            <manifest>
+	                                <mainClass>LaunchClient</mainClass>
+	                            </manifest>
+	                        </archive>
+	                        <descriptorRefs>
+	                            <descriptorRef>jar-with-dependencies</descriptorRef>
+	                        </descriptorRefs>
+	                        <finalName>client.jar</finalName>
+	                    </configuration>
+	                    <phase>package</phase>
+	                    <goals>
+	                        <goal>assembly</goal>
+	                    </goals>
+	                </execution>
+	            </executions>
+	        </plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
 </project>
+
