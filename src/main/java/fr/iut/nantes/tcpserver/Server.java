@@ -14,23 +14,25 @@ import java.util.Properties;
 class Server implements Runnable {
 
 	private Socket clientSocket;
-	private final static int timeOut = 5;
+	private static int maxConnection;
+	private static int runningConnections = 0;
 
 	public Server(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
 
 	public static void main(String args[]) throws Exception {
-		
 		Properties prop = new Properties();
 		// load a properties file
 		prop.load(new FileInputStream("config.properties"));
 
-		
+		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
+
 		ServerSocket serverSocket = null;
 
 		try {
-			serverSocket = new ServerSocket(Integer.parseInt(prop.getProperty("port")));
+			serverSocket = new ServerSocket(Integer.parseInt(prop
+					.getProperty("port")));
 		} catch (IOException ioe) {
 			System.out.println("Error finding port");
 			System.exit(1);
@@ -41,7 +43,8 @@ class Server implements Runnable {
 		try {
 			while (true) {
 				Socket socket = serverSocket.accept();
-				socket.setSoTimeout(Integer.parseInt(prop.getProperty("timeout")) * 1000);
+				socket.setSoTimeout(Integer.parseInt(prop
+						.getProperty("timeout")) * 1000);
 
 				if (socket != null) {
 					System.out.println("Client connected at :\t\t" + socket);
@@ -58,30 +61,47 @@ class Server implements Runnable {
 	public void run() {
 		DataOutputStream writeToClient = null;
 		BufferedReader readerFromClient = null;
-		
+		boolean bool_tooManyConnection = false;
+
 		try {
-			try {
-				System.out.println("Client run at :\t\t\t" + clientSocket);
-				
-				writeToClient = new DataOutputStream(clientSocket.getOutputStream());
-				readerFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+			System.out.println("Client run at :\t\t\t" + clientSocket);
 
-				while(true) {
-					String messageFromClient = readerFromClient.readLine();
-					
-					System.out.println(clientSocket + " say : " + messageFromClient);
+			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
 
-					writeToClient.writeBytes("Echo from server : " + messageFromClient);
-					writeToClient.write(13);
-					writeToClient.write(10);
-					writeToClient.flush();
-				}
-			} finally {
-				//clientSocket.close();
+			if (runningConnections < maxConnection) {
+				writeToClient.writeBytes("Server say Hello !");
+				writeToClient.write(13);
+				writeToClient.write(10);
+				writeToClient.flush();
+
+				runningConnections++;
+
+				System.out.println("Connected cients : " + runningConnections);
+			} else {
+				writeToClient.writeBytes("Server say : too many connection");
+				writeToClient.write(13);
+				writeToClient.write(10);
+				writeToClient.flush();
+
+				clientSocket.close();
+				bool_tooManyConnection = true;
 			}
-		} catch(SocketTimeoutException ste) {
+
+			readerFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+			while (true) {
+				String messageFromClient = readerFromClient.readLine();
+
+				System.out.println(clientSocket + " say : " + messageFromClient);
+
+				writeToClient.writeBytes("Echo from server : " + messageFromClient);
+				writeToClient.write(13);
+				writeToClient.write(10);
+				writeToClient.flush();
+			}
+		} catch (SocketTimeoutException ste) {
 			System.out.println("Client disconnect by timeout :\t" + clientSocket);
-			
+
 			try {
 				writeToClient.writeBytes("exit");
 				writeToClient.write(13);
@@ -97,6 +117,13 @@ class Server implements Runnable {
 		} finally {
 			try {
 				clientSocket.close();
+				if(!bool_tooManyConnection) {
+					runningConnections--;
+				}
+
+				System.out.println("Connected cients : " + runningConnections);
+
+				Thread.currentThread().interrupt();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

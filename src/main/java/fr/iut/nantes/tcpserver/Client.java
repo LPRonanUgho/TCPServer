@@ -31,9 +31,17 @@ public class Client {
 			serverSocket = new Socket(InetAddress.getLocalHost(), Integer.parseInt(prop.getProperty("port")));
 
 			readerFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
+			
+			String alertFromServer = readerFromServer.readLine();
+			System.out.println(alertFromServer);
+			
+			if("Server say : too many connection".equals(alertFromServer)) {
+				System.exit(0);
+			}
+			
 			writeToServer = new DataOutputStream(serverSocket.getOutputStream());
 			
-			System.out.println("Hello, enter exit or quit to exit.");
+			System.out.println("Enter exit or quit to exit.");
 			
 			while (true) {
 				messageFromUser = readerFromUser.readLine();
