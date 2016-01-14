@@ -1,4 +1,4 @@
-package fr.iut.nantes.tcpserver;
+package fr.iut.nantes.tcpserver.server;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -11,84 +11,25 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-/**
- * Serveur - Haut niveau
- * @author Ronan / Ugho
- */
-public class HighLevelServer implements Runnable {
+public abstract class AbstractServer implements Runnable {
 	
 	// Atrributs
-	private Socket clientSocket;
-	private static int port;
-	private static int timeout;
-	private static int maxConnection;
-	private static int runningConnections = 0;
-	private static ExecutorService es;
-
+	protected Socket clientSocket;
+	protected static int port;
+	protected static int timeout;
+	protected static int maxConnection;
+	protected static int runningConnections = 0;
+	protected static Properties prop;
+	
 	/**
 	 * Constructeur du serveur
 	 * @param clientSocket [Socket]
 	 */
-	public HighLevelServer(Socket clientSocket) {
+	public AbstractServer(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
-
-	/**
-	 * Méthode main du serveur
-	 * @param args [String[]]
-	 * @throws Exception
-	 */
-	public static void main(String args[]) {
-		// Chargement du fichier de propriétées
-		Properties prop = new Properties();
 		
-		try {
-			prop.load(new FileInputStream("config.properties"));
-		} catch (FileNotFoundException e) {
-			System.err.println("Fichier de configuration introuvable (config.properties)");
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
-		
-		// Chargement des propriétées
-		port = Integer.parseInt(prop.getProperty("port"));
-		timeout = Integer.parseInt(prop.getProperty("timeout"));
-		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
-		
-		es = Executors.newFixedThreadPool(maxConnection+1);
-		
-		ServerSocket serverSocket = null;
-
-		// Création du socket sur le port chargé depuis les propriétées;
-		try {
-			serverSocket = new ServerSocket(port);
-		} catch (IOException ioe) {
-			System.err.println("Erreur : port incorrect ou déjà utilisé");
-			System.exit(1);
-		}
-
-		System.out.println("Serveur en attente de clients...");
-
-		try {
-			while (true) {
-				Socket socket = serverSocket.accept();
-
-				if (socket != null) {
-					socket.setSoTimeout(timeout * 1000);
-					
-					System.out.println("Client connecté :\t\t" + socket);
-
-					es.submit(new HighLevelServer(socket));
-				}
-			}
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
-	}
-
 	/**
 	 * Méthode run du thread
 	 */
@@ -99,7 +40,7 @@ public class HighLevelServer implements Runnable {
 
 		try {
 			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
-			
+
 			// Vérification du nombre de connexions
 			if (runningConnections < maxConnection) {
 				writeToClient.writeBytes("Serveur : Bienvenue !");
@@ -159,5 +100,38 @@ public class HighLevelServer implements Runnable {
 				System.err.println(e.getMessage());
 			}
 		}
+	}
+	
+	public static void loadProperties() {
+		// Chargement du fichier de propriétées
+		prop = new Properties();
+		
+		try {
+			prop.load(new FileInputStream("config.properties"));
+		} catch (FileNotFoundException e) {
+			System.err.println("Fichier de configuration introuvable (config.properties)");
+			System.exit(1);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			System.exit(1);
+		}
+
+		// Chargement des propriétées
+		port = Integer.parseInt(prop.getProperty("port"));
+		timeout = Integer.parseInt(prop.getProperty("timeout"));
+		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
+	}
+	
+	public static ServerSocket getServerSocket() {
+		ServerSocket serverSocket = null;
+		// Création du socket sur le port chargé depuis les propriétées;
+		try {
+			serverSocket = new ServerSocket(port);
+		} catch (IOException ioe) {
+			System.err.println("Erreur : port incorrect ou déjà utilisé");
+			System.exit(1);
+		}
+		
+		return serverSocket;
 	}
 }
