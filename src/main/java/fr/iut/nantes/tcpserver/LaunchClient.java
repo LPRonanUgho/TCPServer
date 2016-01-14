@@ -39,7 +39,7 @@ public class LaunchClient {
 			String alertFromServer = readerFromServer.readLine();
 			System.out.println(alertFromServer);
 			
-			if("Serveur : nombre de connexion maximum atteint".equals(alertFromServer)) {
+			if("Serveur : nombre de connexions maximum atteint".equals(alertFromServer)) {
 				System.exit(0);
 			}
 			
@@ -47,7 +47,7 @@ public class LaunchClient {
 			
 			System.out.println("Entrez quit ou exit pour sortir");
 			
-			// Boucle d'envoie des message du client et d'affichage des réponses du serveur
+			// Boucle d'envoie des messages du client et d'affichage des réponses du serveur
 			while (true) {
 				messageFromUser = readerFromUser.readLine();
 				

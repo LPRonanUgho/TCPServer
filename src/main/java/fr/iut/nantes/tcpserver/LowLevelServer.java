@@ -50,7 +50,7 @@ class LowLevelServer implements Runnable {
 		
 		ServerSocket serverSocket = null;
 
-		// Création du socket sur le port chargé depuis le fichier de propriétées;
+		// Création du socket sur le port chargé depuis les propriétées;
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException ioe) {
@@ -58,7 +58,7 @@ class LowLevelServer implements Runnable {
 			System.exit(1);
 		}
 
-		System.out.println("Serveur en attante de clients...");
+		System.out.println("Serveur en attente de clients...");
 
 		try {
 			while (true) {
@@ -90,7 +90,7 @@ class LowLevelServer implements Runnable {
 			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
 
 			
-			// Vérification du nombre de connexion
+			// Vérification du nombre de connexions
 			if (runningConnections < maxConnection) {
 				writeToClient.writeBytes("Serveur : Bienvenue !");
 				writeToClient.write(13);
@@ -99,7 +99,7 @@ class LowLevelServer implements Runnable {
 
 				runningConnections++;
 			} else {
-				writeToClient.writeBytes("Serveur : nombre de connexion maximum attein");
+				writeToClient.writeBytes("Serveur : nombre de connexions maximum atteint");
 				writeToClient.write(13);
 				writeToClient.write(10);
 				writeToClient.flush();
