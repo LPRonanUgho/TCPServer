@@ -3,6 +3,7 @@ package fr.iut.nantes.tcpserver;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -38,10 +39,17 @@ class LowLevelServer implements Runnable {
 	 * @param args [String[]]
 	 * @throws Exception
 	 */
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[]){
 		// Chargement du fichier de propriétées
 		Properties prop = new Properties();
-		prop.load(new FileInputStream("config.properties"));
+		
+		try {
+			prop.load(new FileInputStream("config.properties"));
+		} catch (FileNotFoundException e) {
+			System.err.println("Fichier de configuration introuvable (config.properties)");
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 
 		// Chargement des propriétées
 		port = Integer.parseInt(prop.getProperty("port"));
@@ -54,7 +62,7 @@ class LowLevelServer implements Runnable {
 		try {
 			serverSocket = new ServerSocket(port);
 		} catch (IOException ioe) {
-			System.out.println("Erreur : port inconnu");
+			System.err.println("Erreur : port incorrect ou déjà utilisé");
 			System.exit(1);
 		}
 
@@ -74,7 +82,7 @@ class LowLevelServer implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -130,12 +138,12 @@ class LowLevelServer implements Runnable {
 				writeToClient.write(10);
 				writeToClient.flush();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		} catch (SocketException se) {
 			System.out.println("Client déconnecté :\t\t" + clientSocket);
 		} catch (IOException ioe) {
-			System.out.println(ioe);
+			System.err.println(ioe.getMessage());
 		} finally {
 			try {
 				clientSocket.close();
@@ -146,7 +154,7 @@ class LowLevelServer implements Runnable {
 
 				Thread.currentThread().interrupt();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.err.println(e.getMessage());
 			}
 		}
 	}

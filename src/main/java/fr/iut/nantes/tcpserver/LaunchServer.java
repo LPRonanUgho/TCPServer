@@ -1,6 +1,8 @@
 package fr.iut.nantes.tcpserver;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -13,17 +15,26 @@ public class LaunchServer {
 	 * @param args [String[]]
 	 * @throws Exception
 	 */
-	public static void main(String args[]) throws Exception {
+	public static void main(String args[]){
 		// Chargement du fichier de propriétées
 		Properties prop = new Properties();
-		prop.load(new FileInputStream("config.properties"));
 		
-		if("low".equals(prop.getProperty("level"))) {
-			LowLevelServer.main(args);
-		} else if("high".equals(prop.getProperty("level"))) {
-			HighLevelServer.main(args);
-		} else {
-			System.out.println("Erreur properties");
+		try {
+			prop.load(new FileInputStream("config.properties"));
+			
+			if("low".equals(prop.getProperty("level"))) {
+				LowLevelServer.main(args);
+			} else if("high".equals(prop.getProperty("level"))) {
+				HighLevelServer.main(args);
+			} else {
+				System.err.println("Propriété \"level\" manquante ou corrompue");
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("Fichier de configuration introuvable (config.properties)");
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
 		}
 	}
 }

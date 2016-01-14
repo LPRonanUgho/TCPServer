@@ -42,6 +42,7 @@ public class LaunchClient {
 			System.out.println(alertFromServer);
 			
 			if("Serveur : nombre de connexions maximum atteint".equals(alertFromServer)) {
+				System.err.println(alertFromServer);
 				System.exit(0);
 			}
 			
@@ -72,7 +73,7 @@ public class LaunchClient {
 			serverSocket.close();
 			System.exit(0);
 		} catch (UnknownHostException uhe) {
-			System.out.println("Hôte inconnu");
+			System.err.println("Hôte inconnu");
 			System.exit(0);
 		} catch (IOException ioe) {
 			System.err.println("Connexion impossible");
