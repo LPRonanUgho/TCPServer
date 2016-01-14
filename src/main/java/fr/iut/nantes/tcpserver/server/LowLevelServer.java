@@ -23,7 +23,6 @@ public class LowLevelServer extends AbstractServer {
 	 * @throws Exception
 	 */
 	public static void main(String args[]){
-		
 		loadProperties();
 		
 		ServerSocket serverSocket = getServerSocket();

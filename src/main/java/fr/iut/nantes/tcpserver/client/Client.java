@@ -15,7 +15,7 @@ import java.util.Properties;
  * @author Ronan / Ugho
  */
 public class Client {
-
+	// Attributs
 	private static Socket serverSocket = null;
 	private static int port;
 	private static String serverAddress;

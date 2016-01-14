@@ -28,7 +28,6 @@ public class HighLevelServer extends AbstractServer {
 	 * @throws Exception
 	 */
 	public static void main(String args[]) {
-		
 		loadProperties();
 		
 		es = Executors.newFixedThreadPool(maxConnection+1);
