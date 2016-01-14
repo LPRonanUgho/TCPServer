@@ -11,38 +11,43 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 /**
- * Client class
+ * Client
+ * @author Ronan / Ugho
  */
 public class LaunchClient {
 
 	private static Socket serverSocket = null;
+	private static int port;
 	private static String messageFromUser = null;
 	private static BufferedReader readerFromServer = null;
 	private static DataOutputStream writeToServer = null;
 	private static BufferedReader readerFromUser = new BufferedReader(new InputStreamReader(System.in));
 	
 	public static void main(String[] args) throws Exception {
-		
+		// Chargement du fichier de propriétées
 		Properties prop = new Properties();
-		// load a properties file
 		prop.load(new FileInputStream("config.properties"));
 		
+		// Chargement des propriétées
+		port = Integer.parseInt(prop.getProperty("port"));
+		
 		try {
-			serverSocket = new Socket(InetAddress.getLocalHost(), Integer.parseInt(prop.getProperty("port")));
+			serverSocket = new Socket(InetAddress.getLocalHost(), port);
 
 			readerFromServer = new BufferedReader(new InputStreamReader(serverSocket.getInputStream()));
 			
 			String alertFromServer = readerFromServer.readLine();
 			System.out.println(alertFromServer);
 			
-			if("Server say : too many connection".equals(alertFromServer)) {
+			if("Serveur : nombre de connexion maximum atteint".equals(alertFromServer)) {
 				System.exit(0);
 			}
 			
 			writeToServer = new DataOutputStream(serverSocket.getOutputStream());
 			
-			System.out.println("Enter exit or quit to exit.");
+			System.out.println("Entrez quit ou exit pour sortir");
 			
+			// Boucle d'envoie des message du client et d'affichage des réponses du serveur
 			while (true) {
 				messageFromUser = readerFromUser.readLine();
 				
@@ -65,10 +70,10 @@ public class LaunchClient {
 			serverSocket.close();
 			System.exit(0);
 		} catch (UnknownHostException uhe) {
-			System.out.println("Unknow host");
+			System.out.println("Hôte inconnu");
 			System.exit(0);
 		} catch (IOException ioe) {
-			System.err.println("Couldn't connect to server");
+			System.err.println("Connexion impossible");
 			System.exit(0);
 		}
 	}

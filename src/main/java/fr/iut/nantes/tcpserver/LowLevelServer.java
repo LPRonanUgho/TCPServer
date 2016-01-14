@@ -11,74 +11,95 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Properties;
 
+/**
+ * Serveur - Bas niveau
+ * @author Ronan / Ugho
+ */
 class LowLevelServer implements Runnable {
 
+	// Atrributs
 	private Socket clientSocket;
+	private static int port;
+	private static int timeout;
 	private static int maxConnection;
 	private static int runningConnections = 0;
 
+	
+	/**
+	 * Constructeur du serveur
+	 * @param clientSocket [Socket]
+	 */
 	public LowLevelServer(Socket clientSocket) {
 		this.clientSocket = clientSocket;
 	}
 
+	/**
+	 * Méthode main du serveur
+	 * @param args [String[]]
+	 * @throws Exception
+	 */
 	public static void main(String args[]) throws Exception {
+		// Chargement du fichier de propriétées
 		Properties prop = new Properties();
-		// load a properties file
 		prop.load(new FileInputStream("config.properties"));
 
+		// Chargement des propriétées
+		port = Integer.parseInt(prop.getProperty("port"));
+		timeout = Integer.parseInt(prop.getProperty("timeout"));
 		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
-
+		
 		ServerSocket serverSocket = null;
 
+		// Création du socket sur le port chargé depuis le fichier de propriétées;
 		try {
-			serverSocket = new ServerSocket(Integer.parseInt(prop
-					.getProperty("port")));
+			serverSocket = new ServerSocket(port);
 		} catch (IOException ioe) {
-			System.out.println("Error finding port");
+			System.out.println("Erreur : port inconnu");
 			System.exit(1);
 		}
 
-		System.out.println("Server listening...");
+		System.out.println("Serveur en attante de clients...");
 
 		try {
 			while (true) {
 				Socket socket = serverSocket.accept();
-				socket.setSoTimeout(Integer.parseInt(prop
-						.getProperty("timeout")) * 1000);
 
 				if (socket != null) {
-					System.out.println("Client connected at :\t\t" + socket);
-				}
+					socket.setSoTimeout(timeout * 1000);
+					
+					System.out.println("Client connecté :\t\t" + socket);
 
-				Thread t = new Thread(new LowLevelServer(socket));
-				t.start();
+					Thread t = new Thread(new LowLevelServer(socket));
+					t.start();
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Méthode run du thread
+	 */
 	public void run() {
 		DataOutputStream writeToClient = null;
 		BufferedReader readerFromClient = null;
 		boolean bool_tooManyConnection = false;
 
 		try {
-			System.out.println("Client run at :\t\t\t" + clientSocket);
-
 			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
 
+			
+			// Vérification du nombre de connexion
 			if (runningConnections < maxConnection) {
-				writeToClient.writeBytes("Server say Hello !");
+				writeToClient.writeBytes("Serveur : Bienvenue !");
 				writeToClient.write(13);
 				writeToClient.write(10);
 				writeToClient.flush();
 
 				runningConnections++;
-
-				System.out.println("Connected cients : " + runningConnections);
 			} else {
-				writeToClient.writeBytes("Server say : too many connection");
+				writeToClient.writeBytes("Serveur : nombre de connexion maximum attein");
 				writeToClient.write(13);
 				writeToClient.write(10);
 				writeToClient.flush();
@@ -89,18 +110,19 @@ class LowLevelServer implements Runnable {
 
 			readerFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+			// Boucle de lecture des messages du client
 			while (true) {
 				String messageFromClient = readerFromClient.readLine();
 
-				System.out.println(clientSocket + " say : " + messageFromClient);
+				System.out.println(clientSocket + " à dit : " + messageFromClient);
 
-				writeToClient.writeBytes("Echo from server : " + messageFromClient);
+				writeToClient.writeBytes("Echo du serveur : " + messageFromClient);
 				writeToClient.write(13);
 				writeToClient.write(10);
 				writeToClient.flush();
 			}
 		} catch (SocketTimeoutException ste) {
-			System.out.println("Client disconnect by timeout :\t" + clientSocket);
+			System.out.println("Client déconnecté - Timeout :\t" + clientSocket);
 
 			try {
 				writeToClient.writeBytes("exit");
@@ -111,17 +133,16 @@ class LowLevelServer implements Runnable {
 				e.printStackTrace();
 			}
 		} catch (SocketException se) {
-			System.out.println("Client disconnect :\t\t" + clientSocket);
+			System.out.println("Client déconnecté :\t\t" + clientSocket);
 		} catch (IOException ioe) {
 			System.out.println(ioe);
 		} finally {
 			try {
 				clientSocket.close();
+				
 				if(!bool_tooManyConnection) {
 					runningConnections--;
 				}
-
-				System.out.println("Connected cients : " + runningConnections);
 
 				Thread.currentThread().interrupt();
 			} catch (IOException e) {
