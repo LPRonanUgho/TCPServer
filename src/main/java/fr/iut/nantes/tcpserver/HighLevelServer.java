@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
  * @author Ronan / Ugho
  */
 public class HighLevelServer implements Runnable {
+	
 	// Atrributs
 	private Socket clientSocket;
 	private static int port;
@@ -27,7 +28,6 @@ public class HighLevelServer implements Runnable {
 	private static int runningConnections = 0;
 	private static ExecutorService es;
 
-	
 	/**
 	 * Constructeur du serveur
 	 * @param clientSocket [Socket]
@@ -58,7 +58,7 @@ public class HighLevelServer implements Runnable {
 		timeout = Integer.parseInt(prop.getProperty("timeout"));
 		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
 		
-		es = Executors.newFixedThreadPool(maxConnection);
+		es = Executors.newFixedThreadPool(maxConnection+1);
 		
 		ServerSocket serverSocket = null;
 
@@ -99,7 +99,6 @@ public class HighLevelServer implements Runnable {
 
 		try {
 			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
-
 			
 			// Vérification du nombre de connexions
 			if (runningConnections < maxConnection) {

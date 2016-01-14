@@ -24,7 +24,6 @@ class LowLevelServer implements Runnable {
 	private static int timeout;
 	private static int maxConnection;
 	private static int runningConnections = 0;
-
 	
 	/**
 	 * Constructeur du serveur
@@ -97,7 +96,6 @@ class LowLevelServer implements Runnable {
 		try {
 			writeToClient = new DataOutputStream(clientSocket.getOutputStream());
 
-			
 			// Vérification du nombre de connexions
 			if (runningConnections < maxConnection) {
 				writeToClient.writeBytes("Serveur : Bienvenue !");
