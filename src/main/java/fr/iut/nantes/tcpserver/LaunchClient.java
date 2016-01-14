@@ -42,7 +42,6 @@ public class LaunchClient {
 			System.out.println(alertFromServer);
 			
 			if("Serveur : nombre de connexions maximum atteint".equals(alertFromServer)) {
-				System.err.println(alertFromServer);
 				System.exit(0);
 			}
 			
