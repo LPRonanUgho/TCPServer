@@ -58,7 +58,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<finalName>server.jar</finalName>
+							<finalName>server</finalName>
 						</configuration>
 						<phase>package</phase>
 						<goals>
@@ -76,7 +76,7 @@
 							<descriptorRefs>
 								<descriptorRef>jar-with-dependencies</descriptorRef>
 							</descriptorRefs>
-							<finalName>client.jar</finalName>
+							<finalName>client</finalName>
 						</configuration>
 						<phase>package</phase>
 						<goals>

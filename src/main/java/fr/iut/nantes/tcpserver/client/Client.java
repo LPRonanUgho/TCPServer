@@ -24,6 +24,11 @@ public class Client {
 	private static DataOutputStream writeToServer = null;
 	private static BufferedReader readerFromUser = new BufferedReader(new InputStreamReader(System.in));
 	
+	/**
+	 * Méthode main du client
+	 * @param args [String[]]
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		// Chargement du fichier de propriétées
 		Properties prop = new Properties();

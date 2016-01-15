@@ -12,6 +12,10 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Properties;
 
+/**
+ * Serveur Abstract
+ * @author Ronan / Ugho
+ */
 public abstract class AbstractServer implements Runnable {
 	
 	// Atrributs
@@ -102,6 +106,10 @@ public abstract class AbstractServer implements Runnable {
 		}
 	}
 	
+	/**
+	 * Méthode qui charge le fichier de properties
+	 * ainsi que les attributs
+	 */
 	public static void loadProperties() {
 		// Chargement du fichier de propriétées
 		prop = new Properties();
@@ -122,6 +130,10 @@ public abstract class AbstractServer implements Runnable {
 		maxConnection = Integer.parseInt(prop.getProperty("maxConnection"));
 	}
 	
+	/**
+	 * Permet de créer un server socket
+	 * @return ServerSockt
+	 */
 	public static ServerSocket getServerSocket() {
 		ServerSocket serverSocket = null;
 		// Création du socket sur le port chargé depuis les propriétées;
