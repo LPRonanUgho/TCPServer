@@ -18,9 +18,8 @@ Au démarrage, le serveur lira un fichier de configuration pour déterminer les 
 - contenu du mail : Prénoms et noms des membres du binome
 - pièce-jointe : Archive ```ZIP``` contenant les codes sources commentés et un script ant de construction de l’application.
 
-#### Maven utils
+#### Usage
 
-- mvn clean
-- mvn compile
-- mvn package
-- mvn install
+- mvn clean package (Génère les jars dans le dossier target)
+- java -jar server-*.jar (Démarre le serveur)
+- java -jar client-*.jar (Démarre un client)
