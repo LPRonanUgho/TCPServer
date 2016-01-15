@@ -21,5 +21,5 @@ Au démarrage, le serveur lira un fichier de configuration pour déterminer les 
 #### Usage
 
 - mvn clean package (Génère les jars dans le dossier target)
-- java -jar server-*.jar (Démarre le serveur)
-- java -jar client-*.jar (Démarre un client)
+- java -jar server-jar-with-dependencies.jar (Démarre le serveur)
+- java -jar client-jar-with-dependencies.jar (Démarre un client)
